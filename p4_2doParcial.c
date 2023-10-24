@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <time.h>
+#include <unistd.h>
 
 // Declaración de semáforos y variables compartidas
 sem_t sem_estudiante, sem_certificado, sem_pago;
