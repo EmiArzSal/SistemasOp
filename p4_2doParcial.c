@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <time.h>
 
 // Declaración de semáforos y variables compartidas
 sem_t sem_estudiante, sem_certificado, sem_pago;
 int certificado_listo = 0;
+clock_t tiempo_inicial;
 
 // Función que representa el proceso de un estudiante
 void *estudiante(void *id) {
@@ -13,6 +15,8 @@ void *estudiante(void *id) {
 
     // El estudiante llega a la secretaría
     printf("Estudiante %d llega a la secretaría.\n", estudiante_id); // Simular el tiempo de llegada
+    printf("Tiempo transcurrido: %.2f segundos\n", ((double)(clock() - tiempo_inicial)) / CLOCKS_PER_SEC);
+
 
     // El estudiante solicita un certificado de notas
     printf("Estudiante %d solicita un certificado de notas.\n", estudiante_id); // Simular el tiempo de espera
@@ -62,6 +66,7 @@ int main() { // Función principal
     pthread_t encargados[2]; // Arreglo de hilos para encargados
     int id_estudiantes[5] = {1, 2, 3, 4, 5}; // Identificadores de los estudiantes
     int id_encargados[2] = {1, 2}; // Identificadores de los encargados
+    tiempo_inicial = clock();
 
     // Inicialización de semáforos
     sem_init(&sem_estudiante, 0, 0); // Inicializar el semáforo del estudiante en 0
