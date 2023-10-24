@@ -8,16 +8,17 @@
 // Declaración de semáforos y variables compartidas
 sem_t sem_estudiante, sem_certificado, sem_pago;
 int certificado_listo = 0;
-clock_t tiempo_inicial;
+clock_t tiempo_inicial, tiempo_final;
 
 // Función que representa el proceso de un estudiante
 void *estudiante(void *id) {
     int estudiante_id = *(int *)id; // Identificador del estudiante
+    double tiempo_estudiante; // Tiempo que tarda el estudiante en llegar a la secretaría
+
+    tiempo_inicial = clock(); // Iniciar el tiempo de llegada del estudiante
 
     // El estudiante llega a la secretaría
     printf("Estudiante %d llega a la secretaría.\n", estudiante_id); // Simular el tiempo de llegada
-    printf("Tiempo transcurrido: %.2f segundos\n", ((double)(clock() - tiempo_inicial)) / CLOCKS_PER_SEC);
-
 
     // El estudiante solicita un certificado de notas
     printf("Estudiante %d solicita un certificado de notas.\n", estudiante_id); // Simular el tiempo de espera
@@ -39,11 +40,17 @@ void *estudiante(void *id) {
     certificado_listo = 0; // Reiniciar la variable
     printf("Estudiante %d se retira de la secretaría.\n", estudiante_id); // Simular el tiempo de salida
 
+    tiempo_final = clock(); // Finalizar el tiempo de salida del estudiante
+    tiempo_estudiante = (double)(tiempo_final - tiempo_inicial) / CLOCKS_PER_SEC; // Calcular el tiempo que tarda el estudiante en llegar a la secretaría
+    printf("Tiempo que tarda el estudiante %d en llegar a la secretaría: %f segundos.\n", estudiante_id, tiempo_estudiante); // Imprimir el tiempo que tarda el estudiante en llegar a la secretaría
+
     pthread_exit(NULL); // Terminar el hilo
 }
 
 // Función que representa el proceso de un encargado
 void *encargado(void *id) { // Identificador del encargado (1 o 2)
+    double tiempo_encargado; // Tiempo que tarda el encargado en atender a un estudiante
+    tiempo_inicial = clock(); // Iniciar el tiempo de atención del encargado
     while (1) { // Ciclo infinito para que el encargado siempre esté disponible
         sem_wait(&sem_estudiante); // Esperar a que un estudiante solicite un certificado
         printf("Encargado %d atiende a un estudiante.\n", *(int *)id);// Simular el tiempo de atención y entrega
@@ -60,6 +67,9 @@ void *encargado(void *id) { // Identificador del encargado (1 o 2)
         sem_wait(&sem_pago); // Esperar a que el estudiante pague
         printf("Encargado %d recibe el pago.\n", *(int *)id); // Simular el tiempo de pago
     }
+    tiempo_final = clock(); // Finalizar el tiempo de atención del encargado
+    tiempo_encargado = (double)(tiempo_final - tiempo_inicial) / CLOCKS_PER_SEC; // Calcular el tiempo que tarda el encargado en atender a un estudiante
+    printf("Tiempo que tarda el encargado %d en atender a un estudiante: %f segundos.\n", *(int *)id, tiempo_encargado); // Imprimir el tiempo que tarda el encargado en atender a un estudiante
 }
 
 int main() { // Función principal
@@ -67,7 +77,7 @@ int main() { // Función principal
     pthread_t encargados[2]; // Arreglo de hilos para encargados
     int id_estudiantes[5] = {1, 2, 3, 4, 5}; // Identificadores de los estudiantes
     int id_encargados[2] = {1, 2}; // Identificadores de los encargados
-    tiempo_inicial = clock();
+    
 
     // Inicialización de semáforos
     sem_init(&sem_estudiante, 0, 0); // Inicializar el semáforo del estudiante en 0
