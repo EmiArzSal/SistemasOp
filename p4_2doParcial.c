@@ -1,3 +1,9 @@
+// Practica 4, Ejercicio 4 Secretaría escolar
+// Alumnos: 	Arzate Salazar Emiliano 
+//              Gutiérrez Prats Hervey Gabriel  
+//              Múzquiz Palacios Ernesto Javier 
+//              Ortega Lujano Berlín
+// Sistemas Operativos - Grupo 4CV2
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
